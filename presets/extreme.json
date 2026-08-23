@@ -1,0 +1,15 @@
+{
+  "identifierRenaming": true,
+  "stringProtection": true,
+  "constantProtection": true,
+  "expressionTransforms": true,
+  "deadCode": true,
+  "controlFlow": true,
+  "propertyProtection": true,
+  "antiTamper": true,
+  "antiDebug": true,
+  "virtualization": true,
+  "virtualizationMode": "selected",
+  "virtualizationPercentage": 30,
+  "intensity": "extreme"
+}

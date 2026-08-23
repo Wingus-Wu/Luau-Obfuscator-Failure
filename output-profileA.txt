@@ -1,0 +1,184 @@
+if not bit32 then bit32 = {band=function(a,b)return a&b end,bor=function(a,b)return a|b end,bxor=function(a,b)return a~b end,bnot=function(a)return ~a end,lshift=function(a,b)return a<<b end,rshift=function(a,b)return a>>b end} end
+local _nmq5rZGe9f = {[0]="print"}
+local _cplsWS1skHHw = {}
+_cplsWS1skHHw[0] = {{},{10,5},{},{}}
+_cplsWS1skHHw[0].__d = {1,1}
+_cplsWS1skHHw[0].__s = {0,1}
+local _psFvXy3uX1 = {[0] = {bc = {{176,0},{184,0},{178,0},{176,1},{172,5},{184,0},{185,0},{178,0},{164,1,1},{162,1},{183}}, cp = {[0]=10,5}, np = 0}}
+local _bc6JiBMFBr = {[1]=function(a,b) return a ~= b end,[2]=function(a,b) return a or b end,[3]=function(a,b) return a > b end,[4]=function(a,b) return a // b end,[5]=function(a,b) return a + b end,[6]=function(a,b) return bit32.lshift(a, b) end,[7]=function(a,b) return a % b end,[8]=function(a,b) return a == b end,[9]=function(a,b) return bit32.band(a, b) end,[10]=function(a,b) return a * b end,[11]=function(a,b) return bit32.bor(a, b) end,[12]=function(a,b) return a - b end,[13]=function(a,b) return bit32.rshift(a, b) end,[14]=function(a,b) return a and b end,[15]=function(a,b) return a <= b end,[16]=function(a,b) return a / b end,[17]=function(a,b) return a ^ b end,[18]=function(a,b) return a < b end,[19]=function(a,b) return tostring(a) .. tostring(b) end,[20]=function(a,b) return a >= b end}
+local _unMaDC1DRU = {[1]=function(a) return not a end,[2]=function(a) return bit32.bnot(a) end,[3]=function(a) return -a end,[4]=function(a) return #a end}
+local _en9HlmrKXh = {}
+_en9HlmrKXh["print"] = print
+local function _rslvt2KkVmdu(key)
+  if _en9HlmrKXh[key] == nil and key ~= "nil" then
+    _en9HlmrKXh[key] = _G[key]
+  end
+  return _en9HlmrKXh[key]
+end
+local function _h610782(S, instr, ctx)
+  local v=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1
+      if v then _stDjhthmo8.pc=instr[2] end
+end
+local function _h868070(S, instr, ctx)
+  local t=_stDjhthmo8.stack[_stDjhthmo8.sp-1]; local val=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; t[#t+1]=val
+end
+local function _h974241(S, instr, ctx)
+  local val=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local idx=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local obj=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; obj[idx]=val
+end
+local function _h496976(S, instr, ctx)
+  local nargs=instr[2]
+      local nresults=instr[3] or 1
+      local fn=_stDjhthmo8.stack[_stDjhthmo8.sp-nargs]
+      local callArgs={}
+      for i=1,nargs do callArgs[i]=_stDjhthmo8.stack[_stDjhthmo8.sp-nargs+i] end
+      _stDjhthmo8.sp=_stDjhthmo8.sp-nargs-1
+      local rets={fn(table.unpack(callArgs))}
+      for i=1,nresults do _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=rets[i] end
+end
+local function _h308646(S, instr, ctx)
+  _rslvt2KkVmdu(_nmq5rZGe9f[instr[2]]) = S.stack[S.sp]; S.sp=S.sp-1
+end
+local function _h725276(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=nil
+end
+local function _h664062(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1
+      local _pi=instr[2]
+      local _vmf=_vmha8LrXIz
+      _stDjhthmo8.stack[_stDjhthmo8.sp]=function(...)
+        local _args={...}
+        local _rets=_vmf(_pi,_en9HlmrKXh,_args)
+        if _rets then return table.unpack(_rets) end
+        return nil
+      end
+end
+local function _h998971(S, instr, ctx)
+  _stDjhthmo8.stack[_stDjhthmo8.sp]=#_stDjhthmo8.stack[_stDjhthmo8.sp]
+end
+local function _h597302(S, instr, ctx)
+end
+local function _h214074(S, instr, ctx)
+  local nret=instr[2]
+      local rets={}
+      for i=nret,1,-1 do
+        rets[i]=_stDjhthmo8.stack[_stDjhthmo8.sp]
+        _stDjhthmo8.sp=_stDjhthmo8.sp-1
+      end
+      _stDjhthmo8.ret=rets
+end
+local function _h430502(S, instr, ctx)
+  local _idx=instr[2]; _stDjhthmo8.locals[_idx]=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1
+end
+local function _h492544(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp-instr[2]
+end
+local function _h621083(S, instr, ctx)
+end
+local function _h584335(S, instr, ctx)
+  _stDjhthmo8.stack[_stDjhthmo8.sp]=_stDjhthmo8.stack[_stDjhthmo8.sp][_nmq5rZGe9f[instr[2]]]
+end
+local function _h767636(S, instr, ctx)
+  local obj=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local val=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; obj[_nmq5rZGe9f[instr[2]]]=val
+end
+local function _h823818(S, instr, ctx)
+  _stDjhthmo8.pc=instr[2]
+end
+local function _h397537(S, instr, ctx)
+  local b=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local a=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=tostring(a)..tostring(b)
+end
+local function _h570047(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=_stDjhthmo8.locals[instr[2]]
+end
+local function _h709289(S, instr, ctx)
+  _stDjhthmo8.halt=true
+end
+local function _h386015(S, instr, ctx)
+  local nargs=instr[2]
+      local nresults=instr[3] or 1
+      local methodName=_stDjhthmo8.stack[_stDjhthmo8.sp]
+      _stDjhthmo8.sp=_stDjhthmo8.sp-1
+      local obj=_stDjhthmo8.stack[_stDjhthmo8.sp-nargs]
+      local fn=obj[methodName]
+      local callArgs={obj}
+      for i=1,nargs do callArgs[i+1]=_stDjhthmo8.stack[_stDjhthmo8.sp-nargs+i] end
+      _stDjhthmo8.sp=_stDjhthmo8.sp-nargs-1
+      local rets={fn(table.unpack(callArgs))}
+      for i=1,nresults do _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=rets[i] end
+end
+local function _h723661(S, instr, ctx)
+  for i=1,#_stDjhthmo8.varargs do _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=_stDjhthmo8.varargs[i] end
+end
+local function _h122056(S, instr, ctx)
+  local b=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local a=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.stack[_stDjhthmo8.sp]=_bc6JiBMFBr[instr[2]](a,b)
+end
+local function _h358775(S, instr, ctx)
+  _stDjhthmo8.stack[_stDjhthmo8.sp]=_unMaDC1DRU[instr[2]](_stDjhthmo8.stack[_stDjhthmo8.sp])
+end
+local function _h121608(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=_stDjhthmo8.stack[_stDjhthmo8.sp-1]
+end
+local function _h845832(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]=_cplsWS1skHHw[protoIdx][_cplsWS1skHHw[protoIdx].__d[instr[2]]][_cplsWS1skHHw[protoIdx].__s[instr[2]]]
+end
+local function _h817612(S, instr, ctx)
+  local v=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1
+      if not v then _stDjhthmo8.pc=instr[2] end
+end
+local function _h797561(S, instr, ctx)
+  _stDjhthmo8.sp=_stDjhthmo8.sp+1; _stDjhthmo8.stack[_stDjhthmo8.sp]={}
+end
+local function _h636778(S, instr, ctx)
+  local v=S.sp+1; S.stack[v]=_rslvt2KkVmdu(_nmq5rZGe9f[instr[2]]); S.sp=v
+end
+local function _h450678(S, instr, ctx)
+  local idx=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.sp=_stDjhthmo8.sp-1; local obj=_stDjhthmo8.stack[_stDjhthmo8.sp]; _stDjhthmo8.stack[_stDjhthmo8.sp]=obj[idx]
+end
+local _hdQ7LPCxko = {}
+_hdQ7LPCxko[190] = _h610782
+_hdQ7LPCxko[186] = _h868070
+_hdQ7LPCxko[160] = _h974241
+_hdQ7LPCxko[164] = _h496976
+_hdQ7LPCxko[181] = _h308646
+_hdQ7LPCxko[169] = _h725276
+_hdQ7LPCxko[171] = _h664062
+_hdQ7LPCxko[165] = _h998971
+_hdQ7LPCxko[177] = _h597302
+_hdQ7LPCxko[173] = _h214074
+_hdQ7LPCxko[184] = _h430502
+_hdQ7LPCxko[162] = _h492544
+_hdQ7LPCxko[179] = _h621083
+_hdQ7LPCxko[187] = _h584335
+_hdQ7LPCxko[168] = _h767636
+_hdQ7LPCxko[191] = _h823818
+_hdQ7LPCxko[180] = _h397537
+_hdQ7LPCxko[178] = _h570047
+_hdQ7LPCxko[183] = _h709289
+_hdQ7LPCxko[166] = _h386015
+_hdQ7LPCxko[167] = _h723661
+_hdQ7LPCxko[172] = _h122056
+_hdQ7LPCxko[174] = _h358775
+_hdQ7LPCxko[175] = _h121608
+_hdQ7LPCxko[176] = _h845832
+_hdQ7LPCxko[161] = _h817612
+_hdQ7LPCxko[182] = _h797561
+_hdQ7LPCxko[185] = _h636778
+_hdQ7LPCxko[170] = _h450678
+local function _vmha8LrXIz(protoIdx, _en9HlmrKXh, args)
+  local proto = _psFvXy3uX1[protoIdx]
+  local bc = proto.bc
+  local S = {sp=-1, pc=0, stack={}, locals={}, varargs=args or {}, halt=false, ret=nil}
+  for i=1,proto.np or 0 do S.locals[i-1]=S.varargs[i] end
+  while true do
+    local instr = bc[S.pc + 1]
+    if instr == nil then break end
+    S.pc = S.pc + 1
+    local op = instr[1]
+    local handler = _hdQ7LPCxko[op]
+    if handler == nil then break end
+    handler(S, instr, {pIdx=protoIdx})
+    if S.halt then break end
+    if S.ret then return table.unpack(S.ret) end
+  end
+  return nil
+end
+_vmha8LrXIz(0, _en9HlmrKXh, {})

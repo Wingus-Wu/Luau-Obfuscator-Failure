@@ -1,0 +1,150 @@
+// CommonJS bridge that dynamically imports fengari + the ESM build and runs test cases
+const { execSync } = require("child_process");
+
+const testCases = [
+  { name: "hello", source: `print("Hello, world!")\nlocal score = 10\nscore = score + 5\nprint(score)`, expected: "Hello, world!\n15" },
+  { name: "table-prop", source: `local t = {value = 123}\nprint(t.value)`, expected: "123" },
+  { name: "func-call", source: `local function add(a, b)\n  return a + b\nend\nprint(add(2, 3))`, expected: "5" },
+  { name: "for-loop", source: `for i = 1, 3 do\n  print(i)\nend`, expected: "1\n2\n3" },
+  { name: "prop-assign", source: `local t = {}\nt.value = 42\nprint(t.value)`, expected: "42" },
+  { name: "idx-access", source: `local t = {}\nt["key"] = 99\nprint(t["key"])\nprint(t.key)`, expected: "99\n99" },
+  { name: "method-call", source: `local obj = {x = 10, add = function(self, n) return self.x + n end}\nprint(obj:add(5))`, expected: "15" },
+  { name: "compound", source: `local x = 10\nx = x + 5\nx = x * 2\nprint(x)`, expected: "30" },
+  { name: "if-else", source: `local x = 5\nif x > 3 then\n  print("big")\nelse\n  print("small")\nend`, expected: "big" },
+  { name: "while-loop", source: `local i = 1\nwhile i <= 3 do\n  print(i)\n  i = i + 1\nend`, expected: "1\n2\n3" },
+  { name: "repeat-loop", source: `local i = 1\nrepeat\n  print(i)\n  i = i + 1\nuntil i > 3`, expected: "1\n2\n3" },
+  { name: "nested-for", source: `for i = 1, 2 do\n  for j = 1, 2 do\n    print(i * 10 + j)\n  end\nend`, expected: "11\n12\n21\n22" },
+  { name: "nil-bool", source: `print(nil)\nprint(true)\nprint(false)`, expected: "nil\ntrue\nfalse" },
+  { name: "concat", source: `local s = "hello" .. " " .. "world"\nprint(s)`, expected: "hello world" },
+  { name: "unary", source: `local x = 5\nprint(-x)\nprint(not true)\nprint(not false)`, expected: "-5\nfalse\ntrue" },
+  { name: "comparison", source: `print(1 < 2)\nprint(3 > 2)\nprint(2 == 2)\nprint(1 ~= 2)`, expected: "true\ntrue\ntrue\ntrue" },
+  { name: "string-len", source: `print(#"hello")`, expected: "5" },
+  { name: "table-iter", source: `local t = {10, 20, 30}\nfor i, v in pairs(t) do print(i, v) end`, expected: "1\t10\n2\t20\n3\t30" },
+  { name: "local-fn", source: `local function greet(name)\n  return "hello, " .. name\nend\nprint(greet("world"))`, expected: "hello, world" },
+  { name: "math-call", source: `print(math.sqrt(16))`, expected: "4" },
+  { name: "string-func", source: `print(string.len("hello"))`, expected: "5" },
+  { name: "compound-assign", source: `local x = 10\nx += 5\nx *= 2\nprint(x)`, expected: "30" },
+  { name: "interp-string", source: `local name = "world"\nprint(\`Hello, {name}!\`)`, expected: "Hello, world!" },
+  { name: "do-block", source: `local x = 1\ndo\n  local x = 2\n  print(x)\nend\nprint(x)`, expected: "2\n1" },
+  { name: "if-elseif-else", source: `local x = 2\nif x == 1 then\n  print("one")\nelseif x == 2 then\n  print("two")\nelse\n  print("three")\nend`, expected: "two" },
+  { name: "nested-table", source: `local t = { a = { b = { c = 1 } } }\nprint(t.a.b.c)`, expected: "1" },
+  { name: "vararg-fn", source: `local function sum(...)\n  local s = 0\n  for _, v in ipairs({...}) do s = s + v end\n  return s\nend\nprint(sum(1, 2, 3))`, expected: "6" },
+  { name: "multi-return", source: `local function f()\n  return 1, 2, 3\nend\nlocal a, b, c = f()\nprint(a, b, c)`, expected: "1\t2\t3" },
+  { name: "generic-for", source: `local t = {a=1, b=2, c=3}\nfor k, v in pairs(t) do print(k, v) end`, expected: "a\t1\nb\t2\nc\t3" },
+];
+
+const profiles = ["profileA", "profileB", "profileC", "profileD", "profileE"];
+
+// We use a separate node process with dynamic import so ESM+fengari works
+const runnerCode = `
+const fengari = await import("fengari");
+const { lua, lauxlib, lualib, to_jsstring, to_luastring } = fengari;
+
+function runLua(source) {
+  const L = lauxlib.luaL_newstate();
+  lualib.luaL_openlibs(L);
+  const stdout = [];
+  lua.lua_getglobal(L, "print");
+  lua.lua_pushlightuserdata(L, { stdout });
+  lua.lua_pushcclosure(L, (L_ref) => {
+    const handler = lua.lua_touserdata(L_ref, lua.lua_upvalueindex(1));
+    const n = lua.lua_gettop(L_ref);
+    const parts = [];
+    for (let i = 1; i <= n; i++) {
+      const val = lua.lua_tostring(L_ref, i);
+      if (val !== undefined) parts.push(to_jsstring(val));
+      else if (lua.lua_isboolean(L_ref, i)) parts.push(lua.lua_toboolean(L_ref, i) ? "true" : "false");
+      else if (lua.lua_isnil(L_ref, i)) parts.push("nil");
+      else parts.push(String(lua.lua_tonumber(L_ref, i)));
+    }
+    handler.stdout.push(parts.join("\\t"));
+    return 0;
+  }, 1);
+  lua.lua_setglobal(L, "print");
+  const loadResult = lauxlib.luaL_loadstring(L, to_luastring(source));
+  if (loadResult !== 0) {
+    return { stdout: stdout.join("\\n"), error: to_jsstring(lua.lua_tostring(L, -1)) };
+  }
+  const pcallResult = lua.lua_pcall(L, 0, 0, 0);
+  if (pcallResult !== 0) {
+    return { stdout: stdout.join("\\n"), error: to_jsstring(lua.lua_tostring(L, -1)) };
+  }
+  return { stdout: stdout.join("\\n"), error: null };
+}
+
+const { ObfuscatorEngine } = await import("./src/obfuscator.ts");
+
+const profiles = ${JSON.stringify(profiles)};
+const testCases = ${JSON.stringify(testCases)};
+
+for (const profile of profiles) {
+  console.log("\\n===== Profile: " + profile + " =====");
+  let passCount = 0, failCount = 0;
+  for (const tc of testCases) {
+    if (tc.expected === undefined) {
+      console.log("  SKIP  [" + tc.name + "]: (no expected output)");
+      continue;
+    }
+    const engine = new ObfuscatorEngine({
+      seed: "test-" + profile,
+      vmProfile: profile,
+      virtualization: true,
+      stringProtection: true,
+      constantProtection: false,
+      expressionTransforms: false,
+      deadCode: false,
+      controlFlow: false,
+    });
+    const report = engine.getReport(tc.source);
+    let obfuscated;
+    try {
+      obfuscated = runLua(report.output);
+    } catch (e) {
+      obfuscated = { stdout: "", error: "EXCEPTION: " + e.message };
+    }
+    const ok = obfuscated.error === null && obfuscated.stdout === tc.expected;
+    if (ok) { passCount++; } else { failCount++; }
+    if (!ok) {
+      console.log("  FAIL [" + tc.name + "]: error=" + obfuscated.error + ", stdout=" + JSON.stringify(obfuscated.stdout) + ", expected=" + JSON.stringify(tc.expected));
+      console.log("  --- obfuscated output ---");
+      console.log(report.output);
+    }
+  }
+  console.log("  Results: " + passCount + " passed, " + failCount + " failed");
+}
+`;
+
+// Write the runner as a temp .mjs file and execute with tsx or node
+const fs = require("fs");
+const path = require("path");
+const tmpFile = path.join(__dirname, "_vm_runner.mjs");
+fs.writeFileSync(tmpFile, runnerCode);
+
+// Check if tsx is available
+let tsxCmd;
+try {
+  execSync("npx --no-install tsx --version 2>nul", { stdio: "ignore" });
+  tsxCmd = "tsx";
+} catch {
+  // try ts-node
+  tsxCmd = null;
+}
+
+// Use the ESM approach with node and tsx, or fall back to a CJS wrapper
+// Since src files are .ts, we need tsx or ts-node
+try {
+  execSync("npx --no-install tsx --version 2>nul", { stdio: "ignore", cwd: path.resolve(__dirname, "..") });
+  const result = execSync(`npx tsx "${tmpFile}"`, { encoding: "utf8", cwd: path.resolve(__dirname, "..") });
+  console.log(result);
+} catch (e) {
+  // Maybe ts-node works
+  try {
+    const result = execSync(`npx ts-node --esm "${tmpFile}"`, { encoding: "utf8", cwd: path.resolve(__dirname, ".."), timeout: 120000 });
+    console.log(result);
+  } catch (e2) {
+    console.error("Failed to run test:", e2.message);
+    // cleanup
+  }
+} finally {
+  try { fs.unlinkSync(tmpFile); } catch {}
+}

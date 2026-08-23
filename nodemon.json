@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "exec": "node scripts/free-port.cjs && npm run build && node dist/src/server/server.js",
+  "ext": "ts,json",
+  "delay": "1000"
+}

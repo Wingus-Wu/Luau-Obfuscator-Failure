@@ -1,0 +1,50 @@
+{
+    "name": "luau-obfuscator",
+    "version": "1.0.0",
+    "description": "A production-grade, locally-hosted Luau obfuscation toolchain (AST transformations, virtualization, anti-tamper) for legitimate protection of Luau source code.",
+    "type": "module",
+    "license": "MIT",
+    "engines": {
+        "node": ">=20.6"
+    },
+    "bin": {
+        "obfuscator": "dist/cli/main.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "obfuscate": "node dist/src/cli/main.js",
+        "start": "node dist/src/server/server.js",
+        "free-port": "node scripts/free-port.cjs",
+        "test": "vitest run",
+        "fuzz": "node tests/fuzz.js",
+        "diff": "node tests/differential.js",
+        "dev": "node scripts/dev.cjs --host 127.0.0.1"
+    },
+    "keywords": [
+        "luau",
+        "obfuscator",
+        "roblox",
+        "compiler",
+        "ast",
+        "virtualization"
+    ],
+    "dependencies": {
+        "@roblox-ts/luau-ast": "^2.0.1",
+        "chalk": "^5.3.0",
+        "commander": "^12.1.0",
+        "crypto-js": "^4.2.0",
+        "express": "^4.21.0",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "@types/crypto-js": "^4.2.0",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.14.0",
+        "@types/uuid": "^9.0.8",
+        "fengari": "^0.1.5",
+        "nodemon": "^3.1.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.0",
+        "vitest": "^1.6.0"
+    }
+}

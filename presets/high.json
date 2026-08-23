@@ -1,0 +1,13 @@
+{
+  "identifierRenaming": true,
+  "stringProtection": true,
+  "constantProtection": true,
+  "expressionTransforms": true,
+  "deadCode": true,
+  "controlFlow": true,
+  "propertyProtection": true,
+  "antiTamper": false,
+  "antiDebug": true,
+  "virtualization": false,
+  "intensity": "high"
+}

@@ -1,0 +1,182 @@
+local _sdbozdfm_pool = {"\206\227\234\234\233\170\166\241\233\244\234\226\167"};
+local _sp_cache__sdbozdfm = {}
+local _sp_xor__sdbozdfm = {[0]=134,[1]=135,[2]=132,[3]=133,[4]=130,[5]=131,[6]=128,[7]=129,[8]=142,[9]=143,[10]=140,[11]=141,[12]=138,[13]=139,[14]=136,[15]=137,[16]=150,[17]=151,[18]=148,[19]=149,[20]=146,[21]=147,[22]=144,[23]=145,[24]=158,[25]=159,[26]=156,[27]=157,[28]=154,[29]=155,[30]=152,[31]=153,[32]=166,[33]=167,[34]=164,[35]=165,[36]=162,[37]=163,[38]=160,[39]=161,[40]=174,[41]=175,[42]=172,[43]=173,[44]=170,[45]=171,[46]=168,[47]=169,[48]=182,[49]=183,[50]=180,[51]=181,[52]=178,[53]=179,[54]=176,[55]=177,[56]=190,[57]=191,[58]=188,[59]=189,[60]=186,[61]=187,[62]=184,[63]=185,[64]=198,[65]=199,[66]=196,[67]=197,[68]=194,[69]=195,[70]=192,[71]=193,[72]=206,[73]=207,[74]=204,[75]=205,[76]=202,[77]=203,[78]=200,[79]=201,[80]=214,[81]=215,[82]=212,[83]=213,[84]=210,[85]=211,[86]=208,[87]=209,[88]=222,[89]=223,[90]=220,[91]=221,[92]=218,[93]=219,[94]=216,[95]=217,[96]=230,[97]=231,[98]=228,[99]=229,[100]=226,[101]=227,[102]=224,[103]=225,[104]=238,[105]=239,[106]=236,[107]=237,[108]=234,[109]=235,[110]=232,[111]=233,[112]=246,[113]=247,[114]=244,[115]=245,[116]=242,[117]=243,[118]=240,[119]=241,[120]=254,[121]=255,[122]=252,[123]=253,[124]=250,[125]=251,[126]=248,[127]=249,[128]=6,[129]=7,[130]=4,[131]=5,[132]=2,[133]=3,[134]=0,[135]=1,[136]=14,[137]=15,[138]=12,[139]=13,[140]=10,[141]=11,[142]=8,[143]=9,[144]=22,[145]=23,[146]=20,[147]=21,[148]=18,[149]=19,[150]=16,[151]=17,[152]=30,[153]=31,[154]=28,[155]=29,[156]=26,[157]=27,[158]=24,[159]=25,[160]=38,[161]=39,[162]=36,[163]=37,[164]=34,[165]=35,[166]=32,[167]=33,[168]=46,[169]=47,[170]=44,[171]=45,[172]=42,[173]=43,[174]=40,[175]=41,[176]=54,[177]=55,[178]=52,[179]=53,[180]=50,[181]=51,[182]=48,[183]=49,[184]=62,[185]=63,[186]=60,[187]=61,[188]=58,[189]=59,[190]=56,[191]=57,[192]=70,[193]=71,[194]=68,[195]=69,[196]=66,[197]=67,[198]=64,[199]=65,[200]=78,[201]=79,[202]=76,[203]=77,[204]=74,[205]=75,[206]=72,[207]=73,[208]=86,[209]=87,[210]=84,[211]=85,[212]=82,[213]=83,[214]=80,[215]=81,[216]=94,[217]=95,[218]=92,[219]=93,[220]=90,[221]=91,[222]=88,[223]=89,[224]=102,[225]=103,[226]=100,[227]=101,[228]=98,[229]=99,[230]=96,[231]=97,[232]=110,[233]=111,[234]=108,[235]=109,[236]=106,[237]=107,[238]=104,[239]=105,[240]=118,[241]=119,[242]=116,[243]=117,[244]=114,[245]=115,[246]=112,[247]=113,[248]=126,[249]=127,[250]=124,[251]=125,[252]=122,[253]=123,[254]=120,[255]=121}
+local function _sdbozdfm(input)
+  local _decoded = _sdbozdfm_pool[input]
+  if _decoded then input = _decoded end
+  if _sp_cache__sdbozdfm[input] then return _sp_cache__sdbozdfm[input] end
+  local result = ""
+  for i = 1, #input do
+    result = result .. string.char(_sp_xor__sdbozdfm[string.byte(input, i)])
+  end
+  _sp_cache__sdbozdfm[input] = result
+  return result
+end
+if not bit32 then bit32 = {band=function(a,b)return a&b end,bor=function(a,b)return a|b end,bxor=function(a,b)return a~b end,bnot=function(a)return ~a end,lshift=function(a,b)return a<<b end,rshift=function(a,b)return a>>b end} end
+local _nmAC9lGkCY = {[0]="print","_sdbozdfm"}
+local _cplyoFZa6IU = {}
+local _cplyoFZa6IU = {}
+_cplyoFZa6IU[0] = {[0]=5,10,1}
+_cplyoFZa6IU[0].__r = {2,1,0}
+local _cdcC7WQKKex = {}
+local function _cldVu3lUgcM(idx, pIdx)
+  if pIdx == nil then pIdx = 0 end
+  local key = pIdx * 100003 + idx
+  if _cdcC7WQKKex[key] ~= nil then return _cdcC7WQKKex[key] end
+  local pools = _cplyoFZa6IU[pIdx]
+  local val = pools[pools.__r[idx]]
+  _cdcC7WQKKex[key] = val
+  return val
+end
+local _psADFsMkB1 = {[0] = {bc = {{24,0},{24,1},{10,0},{25,1,1},{25,1,1},{9,1},{10,1},{12,0},{17,0},{10,2},{20,13},{12,0},{24,0},{17,0},{25,1,1},{9,1},{14}}, cp = {[0]=1,10,5}, np = 0}}
+local _bcPKAcpmJN = {[1]=function(a,b) return bit32.lshift(a, b) end,[2]=function(a,b) return a and b end,[3]=function(a,b) return a - b end,[4]=function(a,b) return a > b end,[5]=function(a,b) return a ~= b end,[6]=function(a,b) return bit32.rshift(a, b) end,[7]=function(a,b) return a == b end,[8]=function(a,b) return a < b end,[9]=function(a,b) return bit32.band(a, b) end,[10]=function(a,b) return a <= b end,[11]=function(a,b) return a or b end,[12]=function(a,b) return tostring(a) .. tostring(b) end,[13]=function(a,b) return a + b end,[14]=function(a,b) return a * b end,[15]=function(a,b) return a >= b end,[16]=function(a,b) return bit32.bor(a, b) end,[17]=function(a,b) return a % b end,[18]=function(a,b) return a // b end,[19]=function(a,b) return a ^ b end,[20]=function(a,b) return a / b end}
+local _ungoneQ5AJ = {[1]=function(a) return bit32.bnot(a) end,[2]=function(a) return not a end,[3]=function(a) return #a end,[4]=function(a) return -a end}
+local _rmdHhGal1g = {[18]=1,[10]=2,[24]=3,[8]=4,[17]=5,[12]=6,[9]=7,[1]=8,[25]=9,[16]=10,[7]=11,[29]=12,[6]=13,[22]=14,[5]=15,[19]=16,[4]=17,[28]=18,[20]=19,[13]=20,[11]=21,[15]=22,[2]=23,[21]=24,[27]=25,[23]=26,[26]=27,[3]=28,[14]=29}
+local _enAuX935aO = {}
+local function _rslvfXCToRIW(key)
+  if _enAuX935aO[key] == nil then
+    _enAuX935aO[key] = _G[key]
+  end
+  return _enAuX935aO[key]
+end
+_enAuX935aO["print"] = print
+_enAuX935aO["_sdbozdfm"] = _sdbozdfm
+local function _h986500(S, instr, ctx)
+  local val=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local idx=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local obj=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; obj[idx]=val
+end
+local function _h578847(S, instr, ctx)
+end
+local function _h111658(S, instr, ctx)
+  local v=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1
+      if v then _stpMdVr737.pc=instr[2] end
+end
+local function _h301815(S, instr, ctx)
+  local b=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local a=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.stack[_stpMdVr737.sp]=_bcPKAcpmJN[instr[2]](a,b)
+end
+local function _h272844(S, instr, ctx)
+  local idx=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local obj=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.stack[_stpMdVr737.sp]=obj[idx]
+end
+local function _h164095(S, instr, ctx)
+  local nargs=instr[2]
+      local nresults=instr[3] or 1
+      local fn=_stpMdVr737.stack[_stpMdVr737.sp-nargs]
+      local callArgs={}
+      for i=1,nargs do callArgs[i]=_stpMdVr737.stack[_stpMdVr737.sp-nargs+i] end
+      _stpMdVr737.sp=_stpMdVr737.sp-nargs-1
+      local rets={fn(table.unpack(callArgs))}
+      for i=1,nresults do _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=rets[i] end
+end
+local function _h689765(S, instr, ctx)
+  _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=_stpMdVr737.locals[instr[2]]
+end
+local function _h605282(S, instr, ctx)
+  _stpMdVr737.stack[_stpMdVr737.sp]=#_stpMdVr737.stack[_stpMdVr737.sp]
+end
+local function _h378147(S, instr, ctx)
+  local t=_stpMdVr737.stack[_stpMdVr737.sp-1]; local val=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; t[#t+1]=val
+end
+local function _h353717(S, instr, ctx)
+  local v=S.sp+1; S.stack[v]=_rslvfXCToRIW(_nmAC9lGkCY[instr[2]]); S.sp=v
+end
+local function _h776921(S, instr, ctx)
+  local obj=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local val=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; obj[_nmAC9lGkCY[instr[2]]]=val
+end
+local function _h676733(S, instr, ctx)
+  _stpMdVr737.stack[_stpMdVr737.sp]=_stpMdVr737.stack[_stpMdVr737.sp][_nmAC9lGkCY[instr[2]]]
+end
+local function _h976275(S, instr, ctx)
+  local _idx=instr[2]; _stpMdVr737.locals[_idx]=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1
+end
+local function _h760759(S, instr, ctx)
+  local v=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1
+      if not v then _stpMdVr737.pc=instr[2] end
+end
+local function _h341929(S, instr, ctx)
+end
+local _hdjaSVt4Nf = {}
+_hdjaSVt4Nf[21] = _h986500
+_hdjaSVt4Nf[23] = _h578847
+_hdjaSVt4Nf[22] = _h111658
+_hdjaSVt4Nf[20] = _h301815
+_hdjaSVt4Nf[2] = _h272844
+_hdjaSVt4Nf[25] = _h164095
+_hdjaSVt4Nf[17] = _h689765
+_hdjaSVt4Nf[28] = _h605282
+_hdjaSVt4Nf[19] = _h378147
+_hdjaSVt4Nf[24] = _h353717
+_hdjaSVt4Nf[15] = _h776921
+_hdjaSVt4Nf[11] = _h676733
+_hdjaSVt4Nf[12] = _h976275
+_hdjaSVt4Nf[6] = _h760759
+_hdjaSVt4Nf[18] = _h341929
+local function _vm0WiIFuib(protoIdx, _enAuX935aO, args)
+  local proto = _psADFsMkB1[protoIdx]
+  local bc = proto.bc
+  local _stpMdVr737 = {sp=-1, pc=0, stack={}, locals={}, varargs=args or {}, halt=false, ret=nil}
+  for i=1,proto.np or 0 do _stpMdVr737.locals[i-1]=_stpMdVr737.varargs[i] end
+  while true do
+    local instr = bc[_stpMdVr737.pc + 1]
+    if instr == nil then break end
+    _stpMdVr737.pc = _stpMdVr737.pc + 1
+    local op = _rmdHhGal1g[instr[1]] or instr[1]
+    if op == 4 then
+      _enAuX935aO[_nmAC9lGkCY[instr[2]]]=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1
+    elseif op == 7 then
+      _stpMdVr737.sp=_stpMdVr737.sp-instr[2]
+    elseif op == 20 then
+      _stpMdVr737.stack[_stpMdVr737.sp]=_ungoneQ5AJ[instr[2]](_stpMdVr737.stack[_stpMdVr737.sp])
+    elseif op == 12 then
+      _stpMdVr737.pc=instr[2]
+    elseif op == 28 then
+      _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=nil
+    elseif op == 15 then
+      _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]={}
+    elseif op == 17 then
+      local b=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; local a=_stpMdVr737.stack[_stpMdVr737.sp]; _stpMdVr737.sp=_stpMdVr737.sp-1; _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=tostring(a)..tostring(b)
+    elseif op == 27 then
+      for i=1,#_stpMdVr737.varargs do _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=_stpMdVr737.varargs[i] end
+    elseif op == 8 then
+      _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=_stpMdVr737.stack[_stpMdVr737.sp-1]
+    elseif op == 25 then
+      _stpMdVr737.sp=_stpMdVr737.sp+1
+            local _pi=instr[2]
+            local _vmf=_vm0WiIFuib
+            _stpMdVr737.stack[_stpMdVr737.sp]=function(...)
+              local _args={...}
+              local _rets=_vmf(_pi,_enAuX935aO,_args)
+              if _rets then return table.unpack(_rets) end
+              return nil
+            end
+    elseif op == 10 then
+      local nargs=instr[2]
+            local nresults=instr[3] or 1
+            local methodName=_stpMdVr737.stack[_stpMdVr737.sp]
+            _stpMdVr737.sp=_stpMdVr737.sp-1
+            local obj=_stpMdVr737.stack[_stpMdVr737.sp-nargs]
+            local fn=obj[methodName]
+            local callArgs={obj}
+            for i=1,nargs do callArgs[i+1]=_stpMdVr737.stack[_stpMdVr737.sp-nargs+i] end
+            _stpMdVr737.sp=_stpMdVr737.sp-nargs-1
+            local rets={fn(table.unpack(callArgs))}
+            for i=1,nresults do _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=rets[i] end
+    elseif op == 29 then
+      _stpMdVr737.halt=true
+    elseif op == 11 then
+      local nret=instr[2]
+            local rets={}
+            for i=nret,1,-1 do
+              rets[i]=_stpMdVr737.stack[_stpMdVr737.sp]
+              _stpMdVr737.sp=_stpMdVr737.sp-1
+            end
+            _stpMdVr737.ret=rets
+    elseif op == 2 then
+      _stpMdVr737.sp=_stpMdVr737.sp+1; _stpMdVr737.stack[_stpMdVr737.sp]=_cldVu3lUgcM(instr[2], protoIdx)
+    end
+    local handler = _hdjaSVt4Nf[op]
+    if handler then handler(_stpMdVr737, instr, {pIdx=protoIdx}) end
+    if _stpMdVr737.halt then break end
+    if _stpMdVr737.ret then return table.unpack(_stpMdVr737.ret) end
+  end
+  return nil
+end
+_vm0WiIFuib(0, _enAuX935aO, {})

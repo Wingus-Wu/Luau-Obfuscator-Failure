@@ -1,0 +1,141 @@
+if not bit32 then bit32 = {band=function(a,b)return a&b end,bor=function(a,b)return a|b end,bxor=function(a,b)return a~b end,bnot=function(a)return ~a end,lshift=function(a,b)return a<<b end,rshift=function(a,b)return a>>b end} end
+local _nmHATWZrKT = {[0]="print"}
+local _pshG01ej3m = {[0] = {bc = {{49,0},{43,0},{60,0},{49,1},{64,17},{43,0},{46,0},{60,0},{45,1,1},{38,1},{44}}, cp = {[0]=10,5}, np = 0}}
+local _bcNWDy3L1Z = {[1]=function(a,b) return a and b end,[2]=function(a,b) return bit32.rshift(a, b) end,[3]=function(a,b) return a - b end,[4]=function(a,b) return a or b end,[5]=function(a,b) return tostring(a) .. tostring(b) end,[6]=function(a,b) return bit32.bor(a, b) end,[7]=function(a,b) return a > b end,[8]=function(a,b) return a <= b end,[9]=function(a,b) return a < b end,[10]=function(a,b) return a / b end,[11]=function(a,b) return a * b end,[12]=function(a,b) return a // b end,[13]=function(a,b) return a == b end,[14]=function(a,b) return a ~= b end,[15]=function(a,b) return a >= b end,[16]=function(a,b) return bit32.lshift(a, b) end,[17]=function(a,b) return a + b end,[18]=function(a,b) return bit32.band(a, b) end,[19]=function(a,b) return a ^ b end,[20]=function(a,b) return a % b end}
+local _ung7ZkE8LT = {[1]=function(a) return not a end,[2]=function(a) return #a end,[3]=function(a) return -a end,[4]=function(a) return bit32.bnot(a) end}
+local _rmdy1NVubX = {[50]=1,[49]=2,[46]=3,[56]=4,[60]=5,[43]=6,[38]=7,[47]=8,[45]=9,[39]=10,[55]=11,[61]=12,[37]=13,[59]=14,[62]=15,[53]=16,[42]=17,[63]=18,[64]=19,[48]=20,[40]=21,[58]=22,[52]=23,[57]=24,[41]=25,[65]=26,[51]=27,[54]=28,[44]=29}
+local _cpwMsW2F1m = {}
+_cpwMsW2F1m[0] = {[0]=10,5}
+local _ccU8KDm1ep = {}
+local function _clj3gmxN9j(idx, pIdx)
+  if pIdx == nil then pIdx = 0 end
+  local key = pIdx * 100003 + idx
+  if _ccU8KDm1ep[key] ~= nil then return _ccU8KDm1ep[key] end
+  local val = _cpwMsW2F1m[pIdx][idx]
+  _ccU8KDm1ep[key] = val
+  return val
+end
+local _en8PFEJE1l = {}
+local function _rslvOA1OZvjr(key)
+  if _en8PFEJE1l[key] == nil then
+    _en8PFEJE1l[key] = _G[key]
+  end
+  return _en8PFEJE1l[key]
+end
+_en8PFEJE1l["print"] = print
+local function _vmxuZzhpxJ(protoIdx, _en8PFEJE1l, args)
+  local proto = _pshG01ej3m[protoIdx]
+  local bc = proto.bc
+  local _stIQOv0IIH = {sp=-1, pc=0, stack={}, locals={}, varargs=args or {}, halt=false, ret=nil}
+  for i=1,proto.np or 0 do _stIQOv0IIH.locals[i-1]=_stIQOv0IIH.varargs[i] end
+  local _svtZM34Zis = 0
+  while true do
+    local instr = bc[_stIQOv0IIH.pc + 1]
+    if instr == nil then break end
+    _stIQOv0IIH.pc = _stIQOv0IIH.pc + 1
+    local op = _rmdy1NVubX[instr[1]] or instr[1]
+    _svtZM34Zis = (_svtZM34Zis + op) % 4
+    if _svtZM34Zis == 0 then
+      if op == 29 then
+        _stIQOv0IIH.halt=true
+      elseif op == 19 then
+        local b=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local a=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_bcNWDy3L1Z[instr[2]](a,b)
+      elseif op == 1 then
+      elseif op == 6 then
+        local _idx=instr[2]; _stIQOv0IIH.locals[_idx]=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+      elseif op == 11 then
+        local nret=instr[2]
+              local rets={}
+              for i=nret,1,-1 do
+                rets[i]=_stIQOv0IIH.stack[_stIQOv0IIH.sp]
+                _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+              end
+              _stIQOv0IIH.ret=rets
+      elseif op == 25 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1
+              local _pi=instr[2]
+              local _vmf=_vmxuZzhpxJ
+              _stIQOv0IIH.stack[_stIQOv0IIH.sp]=function(...)
+                local _args={...}
+                local _rets=_vmf(_pi,_en8PFEJE1l,_args)
+                if _rets then return table.unpack(_rets) end
+                return nil
+              end
+      elseif op == 15 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]={}
+      elseif op == 7 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp-instr[2]
+      end
+    elseif _svtZM34Zis == 1 then
+      if op == 27 then
+        for i=1,#_stIQOv0IIH.varargs do _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_stIQOv0IIH.varargs[i] end
+      elseif op == 26 then
+      elseif op == 12 then
+        _stIQOv0IIH.pc=instr[2]
+      elseif op == 20 then
+        _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_ung7ZkE8LT[instr[2]](_stIQOv0IIH.stack[_stIQOv0IIH.sp])
+      elseif op == 18 then
+        _stIQOv0IIH.stack[_stIQOv0IIH.sp]=#_stIQOv0IIH.stack[_stIQOv0IIH.sp]
+      elseif op == 22 then
+        local obj=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local val=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; obj[_nmHATWZrKT[instr[2]]]=val
+      elseif op == 5 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_stIQOv0IIH.locals[instr[2]]
+      end
+    elseif _svtZM34Zis == 2 then
+      if op == 4 then
+        _en8PFEJE1l[_nmHATWZrKT[instr[2]]]=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+      elseif op == 10 then
+        local nargs=instr[2]
+              local nresults=instr[3] or 1
+              local methodName=_stIQOv0IIH.stack[_stIQOv0IIH.sp]
+              _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+              local obj=_stIQOv0IIH.stack[_stIQOv0IIH.sp-nargs]
+              local fn=obj[methodName]
+              local callArgs={obj}
+              for i=1,nargs do callArgs[i+1]=_stIQOv0IIH.stack[_stIQOv0IIH.sp-nargs+i] end
+              _stIQOv0IIH.sp=_stIQOv0IIH.sp-nargs-1
+              local rets={fn(table.unpack(callArgs))}
+              for i=1,nresults do _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=rets[i] end
+      elseif op == 14 then
+        local v=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+              if v then _stIQOv0IIH.pc=instr[2] end
+      elseif op == 28 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=nil
+      elseif op == 24 then
+        local val=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local idx=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local obj=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; obj[idx]=val
+      elseif op == 17 then
+        local b=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local a=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=tostring(a)..tostring(b)
+      elseif op == 23 then
+        local idx=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; local obj=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=obj[idx]
+      end
+    elseif _svtZM34Zis == 3 then
+      if op == 13 then
+        local v=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1
+              if not v then _stIQOv0IIH.pc=instr[2] end
+      elseif op == 21 then
+        _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_stIQOv0IIH.stack[_stIQOv0IIH.sp][_nmHATWZrKT[instr[2]]]
+      elseif op == 2 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_clj3gmxN9j(instr[2], protoIdx)
+      elseif op == 9 then
+        local nargs=instr[2]
+              local nresults=instr[3] or 1
+              local fn=_stIQOv0IIH.stack[_stIQOv0IIH.sp-nargs]
+              local callArgs={}
+              for i=1,nargs do callArgs[i]=_stIQOv0IIH.stack[_stIQOv0IIH.sp-nargs+i] end
+              _stIQOv0IIH.sp=_stIQOv0IIH.sp-nargs-1
+              local rets={fn(table.unpack(callArgs))}
+              for i=1,nresults do _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=rets[i] end
+      elseif op == 3 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_en8PFEJE1l[_nmHATWZrKT[instr[2]]]
+      elseif op == 8 then
+        _stIQOv0IIH.sp=_stIQOv0IIH.sp+1; _stIQOv0IIH.stack[_stIQOv0IIH.sp]=_stIQOv0IIH.stack[_stIQOv0IIH.sp-1]
+      elseif op == 16 then
+        local t=_stIQOv0IIH.stack[_stIQOv0IIH.sp-1]; local val=_stIQOv0IIH.stack[_stIQOv0IIH.sp]; _stIQOv0IIH.sp=_stIQOv0IIH.sp-1; t[#t+1]=val
+      end
+    end
+    if _stIQOv0IIH.halt then break end
+    if _stIQOv0IIH.ret then return table.unpack(_stIQOv0IIH.ret) end
+  end
+  return nil
+end
+_vmxuZzhpxJ(0, _en8PFEJE1l, {})
