@@ -110,22 +110,24 @@ export class ConstantProtectionTransform {
             case "arithmetic": {
                 const ops = [
                     () => {
-                        const a = context.random.nextInt(1, Math.floor(value) - 1);
+                        const a = context.random.nextInt(1, Math.floor(Math.abs(value)) + 1);
                         const b = value - a;
                         return { kind: "BinaryExpression", operator: "+", left: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, line: num.line, column: num.column };
                     },
                     () => {
-                        const a = value * 2;
-                        const b = 2;
-                        return { kind: "BinaryExpression", operator: "/", left: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, line: num.line, column: num.column };
+                        const a = context.random.nextInt(2, 10);
+                        const b = value * a;
+                        return { kind: "BinaryExpression", operator: "/", left: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, line: num.line, column: num.column };
                     },
                     () => {
-                        const a = value + 100;
-                        const b = 100;
-                        return { kind: "BinaryExpression", operator: "-", left: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, line: num.line, column: num.column };
+                        const a = context.random.nextInt(1, 100);
+                        const b = value + a;
+                        return { kind: "BinaryExpression", operator: "-", left: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, line: num.line, column: num.column };
                     },
                     () => {
-                        return { kind: "BinaryExpression", operator: "*", left: { kind: "NumberLiteral", raw: String(value), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: "1", line: num.line, column: num.column }, line: num.line, column: num.column };
+                        const a = context.random.nextInt(2, 5);
+                        const b = value * a;
+                        return { kind: "BinaryExpression", operator: "*", left: { kind: "NumberLiteral", raw: String(b), line: num.line, column: num.column }, right: { kind: "NumberLiteral", raw: String(a), line: num.line, column: num.column }, line: num.line, column: num.column };
                     },
                 ];
                 return context.random.pick(ops)();
@@ -167,7 +169,7 @@ export class ConstantProtectionTransform {
             return { kind: "UnaryExpression", operator: "not", argument: { kind: "NilLiteral", line: bool.line, column: bool.column }, line: bool.line, column: bool.column };
         }
         else {
-            return { kind: "UnaryExpression", operator: "not", argument: { kind: "BooleanLiteral", value: true, line: bool.line, column: bool.column }, line: bool.line, column: bool.column };
+            return { kind: "UnaryExpression", operator: "not", argument: { kind: "NilLiteral", line: bool.line, column: bool.column }, line: bool.line, column: bool.column };
         }
     }
 }

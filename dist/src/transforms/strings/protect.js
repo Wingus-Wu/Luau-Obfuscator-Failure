@@ -281,8 +281,6 @@ export class StringProtectionTransform {
         return expr;
     }
     protectString(str) {
-        if (str.value.length === 0)
-            return str;
         const { encoded } = encodeString(str.value, this.context.stringPoolStrategy, this.context.stringPoolStrategyParams);
         this.poolId++;
         this.context.stringPool.set(this.poolId, { encoded, strategy: this.context.stringPoolStrategy });

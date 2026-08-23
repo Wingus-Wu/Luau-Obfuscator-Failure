@@ -719,16 +719,8 @@ function getHTML() {
     </div>
 
     <div class="panel">
-      <label>Protection Level</label>
+      <label>Protection Settings</label>
       <div class="controls">
-        <div class="control-group">
-          <select id="level">
-            <option value="low">Low</option>
-            <option value="medium" selected>Medium</option>
-            <option value="high">High</option>
-            <option value="extreme">Extreme</option>
-          </select>
-        </div>
         <button id="obfuscate" class="btn btn-primary">
           <span id="obfuscateLabel">Obfuscate</span>
         </button>
@@ -738,9 +730,13 @@ function getHTML() {
         <label><input type="checkbox" id="stringProtection" checked> String Protection</label>
         <label><input type="checkbox" id="constantProtection" checked> Constant Protection</label>
         <label><input type="checkbox" id="expressionTransforms" checked> Expression Transforms</label>
-        <label><input type="checkbox" id="virtualization"> Virtualization</label>
-        <label><input type="checkbox" id="deadCode"> Dead Code</label>
-        <label><input type="checkbox" id="controlFlow"> Control Flow</label>
+        <label><input type="checkbox" id="virtualization" checked> Virtualization</label>
+        <label><input type="checkbox" id="deadCode" checked> Dead Code</label>
+        <label><input type="checkbox" id="controlFlow" checked> Control Flow</label>
+        <label><input type="checkbox" id="opaquePredicate" checked> Opaque Predicates</label>
+        <label><input type="checkbox" id="propertyProtection" checked> Property Protection</label>
+        <label><input type="checkbox" id="antiTamper" checked> Anti-Tamper</label>
+        <label><input type="checkbox" id="outputRandomization" checked> Output Randomization</label>
       </div>
     </div>
 
@@ -778,7 +774,6 @@ function getHTML() {
   <script>
     const input = document.getElementById('input');
     const output = document.getElementById('output');
-    const level = document.getElementById('level');
     const messageEl = document.getElementById('message');
     const consoleEl = document.getElementById('console');
     const consoleSearch = document.getElementById('consoleSearch');
@@ -939,7 +934,6 @@ function getHTML() {
       messageEl.className = 'message';
 
       const config = {
-        intensity: level.value,
         identifierRenaming: document.getElementById('identifierRenaming').checked,
         stringProtection: document.getElementById('stringProtection').checked,
         constantProtection: document.getElementById('constantProtection').checked,
@@ -947,6 +941,10 @@ function getHTML() {
         virtualization: document.getElementById('virtualization').checked,
         deadCode: document.getElementById('deadCode').checked,
         controlFlow: document.getElementById('controlFlow').checked,
+        opaquePredicate: document.getElementById('opaquePredicate').checked,
+        propertyProtection: document.getElementById('propertyProtection').checked,
+        antiTamper: document.getElementById('antiTamper').checked,
+        outputRandomization: document.getElementById('outputRandomization').checked,
       };
 
       try {

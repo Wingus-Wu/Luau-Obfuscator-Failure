@@ -342,14 +342,21 @@ const INTENSITY_PROFILES = {
 // Apply an intensity preset on top of the caller's config. Presets stay
 // authoritative for every toggle so that the intensity levels remain
 // well-defined (e.g. "medium" always keeps dead code / control flow off).
-// The single exception is `virtualization`: it is exposed as an explicit
-// opt-in (CLI `--virtualize`), so a preset may ENABLE it (e.g. "extreme")
-// but must never turn OFF a VM pass the user explicitly requested. Before
-// this carve-out, `--virtualize --level medium` was silently reverted to
-// false by the medium preset, so the flag did nothing.
+// Carve-outs: UI checkboxes / CLI flags that are explicitly set by the user
+// should not be overridden by the intensity preset.
 export function applyIntensity(base, intensity) {
     const config = { ...DEFAULT_CONFIG, ...base };
     const profile = INTENSITY_PROFILES[intensity] ?? {};
+    const UI_CARVE_OUTS = [
+        "virtualization",
+        "virtualizationMode",
+        "identifierRenaming",
+        "stringProtection",
+        "constantProtection",
+        "expressionTransforms",
+        "deadCode",
+        "controlFlow",
+    ];
     for (const [key, value] of Object.entries(profile)) {
         // Carve-out: explicit virtualization!=="none" should not be overridden by preset
         if (key === "virtualization" && base.virtualization && base.virtualization !== "none" && profile.virtualization === "none") {
@@ -357,6 +364,10 @@ export function applyIntensity(base, intensity) {
         }
         // Carve-out: explicit virtualization mode should not be downgraded
         if (key === "virtualizationMode" && base.virtualizationMode && base.virtualizationMode !== "none") {
+            continue;
+        }
+        // Carve-out: UI checkboxes / explicit user flags
+        if (UI_CARVE_OUTS.includes(key) && base[key] !== undefined) {
             continue;
         }
         config[key] = value;

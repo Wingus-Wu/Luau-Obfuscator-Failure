@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { ObfuscatorEngine } from "../src/obfuscator";
 describe("Identifier Renaming", () => {
     it("renames local variables", () => {
@@ -39,7 +40,9 @@ describe("String Protection", () => {
         const engine = new ObfuscatorEngine({ seed: "str-test-2", stringProtection: true });
         const source = 'print("")';
         const result = engine.generate(source);
-        expect(result).not.toContain('""');
+        // Empty string should be protected: print("") becomes print(_decoder(1))
+        expect(result).not.toContain('print("")');
+        expect(result).toContain('_sd');
     });
     it("handles special characters", () => {
         const engine = new ObfuscatorEngine({ seed: "str-test-3", stringProtection: true });
@@ -65,6 +68,7 @@ describe("Constant Protection", () => {
         expect(result).not.toContain("false");
     });
     it("preserves 0 and 1", () => {
+        const engine = new ObfuscatorEngine({ seed: "const-test-3", constantProtection: true });
         const source = "local x = 0; local y = 1;";
         const result = engine.generate(source);
         expect(result).toMatch(/local\s+\S+\s+=\s+0/);
