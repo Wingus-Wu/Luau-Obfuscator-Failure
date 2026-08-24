@@ -860,11 +860,14 @@ class BytecodeCompiler {
 
     if (op === "and" || op === "or") {
       const jumpRef = { idx: 0 };
+      // For "and": if left is falsy, return left (skip right). JumpIfFalse pops, so Dup first.
+      // For "or": if left is truthy, return left (skip right). JumpIfTrue pops, so Dup first.
       const jumpOp = op === "and" ? Op.JumpIfFalse : Op.JumpIfTrue;
       tasks.push({ kind: "patchJump", ref: jumpRef });
       tasks.push({ kind: "expr", expr: expr.right });
-      tasks.push({ kind: "emit", op: Op.Pop, args: [1] });
+      tasks.push({ kind: "emit", op: Op.Pop, args: [1] }); // Pop left if not short-circuited
       tasks.push({ kind: "emitJump", op: jumpOp, ref: jumpRef });
+      tasks.push({ kind: "emit", op: Op.Dup }); // Dup left so JumpIf* pops the copy
       tasks.push({ kind: "expr", expr: expr.left });
     } else {
       tasks.push({ kind: "emit", op: Op.Binary, args: [opCode] });

@@ -4,6 +4,14 @@ import type { TransformContext } from "../transform.js";
 import { Parser, ParseError } from "../../parser/index.js";
 import { Generator } from "../../generator/index.js";
 
+let fengariModule: any = null;
+try {
+  fengariModule = await import("fengari");
+} catch (e) {
+  // fengari not available
+}
+const { lua, lauxlib, lualib, to_jsstring, to_luastring } = fengariModule || {};
+
 export class ValidationTransform {
   name = "validation";
   priority = 100;
@@ -44,6 +52,70 @@ export class ValidationTransform {
     }
 
     return ast;
+  }
+
+  private runLua(source: string): { stdout: string; stderr: string; error: string | null } {
+    if (!lua || !lauxlib || !lualib) {
+      return { stdout: "", stderr: "", error: "fengari not available" };
+    }
+
+    const L = lauxlib.luaL_newstate();
+    lualib.luaL_openlibs(L);
+
+    const stdout: string[] = [];
+    const stderr: string[] = [];
+
+    // Override print to capture output
+    lua.lua_getglobal(L, "print");
+    lua.lua_pushlightuserdata(L, { stdout, stderr });
+    lua.lua_pushcclosure(L, (L_ref: any) => {
+      const L = L_ref;
+      const handler = lua.lua_touserdata(L, lua.lua_upvalueindex(1));
+      const n = lua.lua_gettop(L);
+      const parts: string[] = [];
+      for (let i = 1; i <= n; i++) {
+        const val = lua.lua_tostring(L, i);
+        if (val !== undefined) {
+          parts.push(to_jsstring(val));
+        } else if (lua.lua_isboolean(L, i)) {
+          parts.push(lua.lua_toboolean(L, i) ? "true" : "false");
+        } else if (lua.lua_isnil(L, i)) {
+          parts.push("nil");
+        } else {
+          parts.push(String(lua.lua_tonumber(L, i)));
+        }
+      }
+      handler.stdout.push(parts.join("\t"));
+      return 0;
+    }, 1);
+    lua.lua_setglobal(L, "print");
+
+    // Override error to capture error messages
+    lua.lua_getglobal(L, "error");
+    lua.lua_pushlightuserdata(L, { stderr });
+    lua.lua_pushcclosure(L, (L_ref: any) => {
+      const L = L_ref;
+      const handler = lua.lua_touserdata(L, lua.lua_upvalueindex(1));
+      const msg = lua.lua_tostring(L, 1) ? to_jsstring(lua.lua_tostring(L, 1)) : "unknown error";
+      handler.stderr.push(msg);
+      lua.lua_pushstring(L, to_luastring(msg));
+      return 1;
+    }, 1);
+    lua.lua_setglobal(L, "error");
+
+    const loadResult = lauxlib.luaL_loadstring(L, to_luastring(source));
+    if (loadResult !== 0) {
+      const err = to_jsstring(lua.lua_tostring(L, -1));
+      return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: err };
+    }
+
+    const pcallResult = lua.lua_pcall(L, 0, 0, 0);
+    if (pcallResult !== 0) {
+      const err = to_jsstring(lua.lua_tostring(L, -1));
+      return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: err };
+    }
+
+    return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: null };
   }
 
   private validateSyntax(context: TransformContext): void {
@@ -256,13 +328,22 @@ export class ValidationTransform {
   }
 
   private validateRuntime(ast: Program, context: TransformContext): void {
-    // Runtime validation would require a Lua/Luau VM
-    // This is a placeholder for integration with fengari or similar
-    // The actual implementation would:
-    // 1. Generate code from AST
-    // 2. Run it in a sandboxed Luau VM
-    // 3. Compare outputs with expected behavior
-    console.log("[Validation] Runtime validation requires Luau VM integration");
+    if (!lua || !lauxlib || !lualib) {
+      console.warn("[Validation] Runtime validation skipped - fengari not available");
+      return;
+    }
+
+    // Generate code from the AST
+    const source = this.generator.generate(ast);
+    
+    // Run the code in fengari
+    const result = this.runLua(source);
+    
+    if (result.error) {
+      throw new Error(`Runtime validation failed: ${result.error}\nStderr: ${result.stderr}`);
+    }
+    
+    console.log("[Validation] Runtime validation passed");
   }
 
   private validateDifferential(ast: Program, context: TransformContext): void {

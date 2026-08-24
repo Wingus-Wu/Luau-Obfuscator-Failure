@@ -14,6 +14,14 @@ import { VirtualizationTransform } from "./transforms/virtualization/virtualize.
 import { OpaquePredicateTransform } from "./transforms/controlflow/opaque.js";
 import { AntiTamperTransform } from "./transforms/antiTamper/inject.js";
 import { OutputRandomizationTransform } from "./transforms/output/randomize.js";
+let fengariModule = null;
+try {
+    fengariModule = await import("fengari");
+}
+catch (e) {
+    // fengari not available
+}
+const { lua, lauxlib, lualib, to_jsstring, to_luastring } = fengariModule || {};
 export { createRandom, generateSeed, applyIntensity };
 export class ObfuscatorEngine {
     random;
@@ -177,6 +185,31 @@ export class ObfuscatorEngine {
             warnings.push(`Output validation failed: ${msg}`);
             this.log("error", "Output validation failed", { error: msg });
         }
+        // Runtime validation: execute the generated code to catch runtime errors
+        if (this.config.validation && this.config.validationRuntimeTest && lua && lauxlib && lualib) {
+            try {
+                this.log("info", "Running runtime validation...");
+                const runtimeResult = this.runLua(output);
+                if (runtimeResult.error) {
+                    validationPassed = false;
+                    const msg = `Runtime validation failed: ${runtimeResult.error}\nStderr: ${runtimeResult.stderr}`;
+                    warnings.push(msg);
+                    this.log("error", "Runtime validation failed", { error: runtimeResult.error, stderr: runtimeResult.stderr });
+                }
+                else {
+                    this.log("success", "Runtime validation passed");
+                }
+            }
+            catch (e) {
+                validationPassed = false;
+                const msg = e instanceof Error ? e.message : String(e);
+                warnings.push(`Runtime validation error: ${msg}`);
+                this.log("error", "Runtime validation error", { error: msg });
+            }
+        }
+        else if (this.config.validationRuntimeTest && (!lua || !lauxlib || !lualib)) {
+            this.log("warn", "Runtime validation skipped - fengari not available");
+        }
         const duration = Date.now() - startTime;
         this.log("success", "Obfuscation complete", { duration, seed: this.config.seed });
         return {
@@ -186,6 +219,65 @@ export class ObfuscatorEngine {
             warnings,
             skippedTransforms,
         };
+    }
+    runLua(source) {
+        if (!lua || !lauxlib || !lualib) {
+            return { stdout: "", stderr: "", error: "fengari not available" };
+        }
+        const L = lauxlib.luaL_newstate();
+        lualib.luaL_openlibs(L);
+        const stdout = [];
+        const stderr = [];
+        // Override print to capture output
+        lua.lua_getglobal(L, "print");
+        lua.lua_pushlightuserdata(L, { stdout, stderr });
+        lua.lua_pushcclosure(L, (L_ref) => {
+            const L = L_ref;
+            const handler = lua.lua_touserdata(L, lua.lua_upvalueindex(1));
+            const n = lua.lua_gettop(L);
+            const parts = [];
+            for (let i = 1; i <= n; i++) {
+                const val = lua.lua_tostring(L, i);
+                if (val !== undefined) {
+                    parts.push(to_jsstring(val));
+                }
+                else if (lua.lua_isboolean(L, i)) {
+                    parts.push(lua.lua_toboolean(L, i) ? "true" : "false");
+                }
+                else if (lua.lua_isnil(L, i)) {
+                    parts.push("nil");
+                }
+                else {
+                    parts.push(String(lua.lua_tonumber(L, i)));
+                }
+            }
+            handler.stdout.push(parts.join("\t"));
+            return 0;
+        }, 1);
+        lua.lua_setglobal(L, "print");
+        // Override error to capture error messages
+        lua.lua_getglobal(L, "error");
+        lua.lua_pushlightuserdata(L, { stderr });
+        lua.lua_pushcclosure(L, (L_ref) => {
+            const L = L_ref;
+            const handler = lua.lua_touserdata(L, lua.lua_upvalueindex(1));
+            const msg = lua.lua_tostring(L, 1) ? to_jsstring(lua.lua_tostring(L, 1)) : "unknown error";
+            handler.stderr.push(msg);
+            lua.lua_pushstring(L, to_luastring(msg));
+            return 1;
+        }, 1);
+        lua.lua_setglobal(L, "error");
+        const loadResult = lauxlib.luaL_loadstring(L, to_luastring(source));
+        if (loadResult !== 0) {
+            const err = to_jsstring(lua.lua_tostring(L, -1));
+            return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: err };
+        }
+        const pcallResult = lua.lua_pcall(L, 0, 0, 0);
+        if (pcallResult !== 0) {
+            const err = to_jsstring(lua.lua_tostring(L, -1));
+            return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: err };
+        }
+        return { stdout: stdout.join("\n"), stderr: stderr.join("\n"), error: null };
     }
     generate(source, config) {
         if (config) {
